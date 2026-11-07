@@ -1,0 +1,68 @@
+{
+  "label": "KIT BASELINE ONLY: not the student's submission",
+  "dataset": {
+    "version": 1,
+    "source": "AgentVerse seeded generator v2",
+    "synthetic": true,
+    "seed": 42,
+    "pack": "mixed",
+    "case_count": 25,
+    "input_record_count": 1015,
+    "record_count_method": "first list among events/rows/prices_pence/items/lines; otherwise one per case",
+    "tasks": {
+      "cashflow": 9,
+      "transactions": 8,
+      "markets": 8
+    },
+    "families": {
+      "regular": 2,
+      "ordinary": 2,
+      "rising": 2,
+      "late_income": 2,
+      "one_cycle": 2,
+      "falling": 2,
+      "small_business": 2,
+      "multiple_cycles": 1,
+      "flat": 1,
+      "same_day": 1,
+      "decoy_loops": 1,
+      "volatile": 1,
+      "negative_opening": 1,
+      "large_ordinary": 1,
+      "regime_change": 1,
+      "invalid_currency": 1,
+      "duplicate_id": 1,
+      "jump": 1
+    },
+    "input_sha256": "986f3f17b08ff2c68eae017b8d803a150b33c125e600eb8cc1e2cac0cb816e1f",
+    "answer_sha256": "29f9881b415b74d8ee03ee2e4ada7c838923ffde4d1393a8dcd7d9aaaffac74a",
+    "limits": "Local visible synthetic practice, not hidden judging or proof of real-world financial performance. Inputs only go to adapters; answers stay with the evaluator."
+  },
+  "dataset_cases": 25,
+  "attempted": 25,
+  "passed": 17,
+  "failed": 0,
+  "errors": 0,
+  "strategy_runs_completed": 8,
+  "not_run": 0,
+  "cycle_record_metrics": {
+    "cycle_precision": 1.0,
+    "cycle_recall": 1.0,
+    "cycle_f1": 1.0,
+    "true_positive_records": 21,
+    "false_positive_records": 0,
+    "missed_records": 0
+  },
+  "market_summary": {
+    "paths": 8,
+    "wins_vs_buy_and_hold": 0,
+    "losses_vs_buy_and_hold": 0,
+    "ties": 8,
+    "beat_cash": 3,
+    "median_excess_vs_buy_and_hold_bps_of_capital": 0,
+    "mean_max_drawdown_bps": 1983,
+    "sign_test_p_value": null,
+    "verdict": "Not distinguishable from buy-and-hold on these paths; more paths or a better edge is needed."
+  },
+  "limits": "Passing defined checks does not validate an entire product. Market completion is not profitability. Synthetic data is not a real-world benchmark. This runner is not an OS security sandbox."
+}

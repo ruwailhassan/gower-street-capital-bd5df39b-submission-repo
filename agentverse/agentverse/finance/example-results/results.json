@@ -1,0 +1,237 @@
+{
+  "transactions": {
+    "source": {
+      "id": "agentverse-finance-practice-v1",
+      "synthetic": true,
+      "currency": "GBP",
+      "money_unit": "pence",
+      "description": "Authored practice cases. No real accounts, prices, credentials or financial records. Not an accuracy or profitability benchmark."
+    },
+    "transaction_count": 7,
+    "total_transferred_pence": 688000,
+    "large_transfer_ids": [
+      "T01",
+      "T02",
+      "T07"
+    ],
+    "three_account_cycles": [
+      {
+        "transaction_ids": [
+          "T03",
+          "T04",
+          "T05"
+        ],
+        "reason": "Three transfers form a directed cycle; investigate context. This is not proof of wrongdoing."
+      }
+    ],
+    "records": [
+      {
+        "id": "T01",
+        "date": "2026-11-01",
+        "sender": "employer",
+        "recipient": "alice",
+        "amount_pence": 200000,
+        "currency": "GBP"
+      },
+      {
+        "id": "T02",
+        "date": "2026-11-02",
+        "sender": "alice",
+        "recipient": "landlord",
+        "amount_pence": 90000,
+        "currency": "GBP"
+      },
+      {
+        "id": "T03",
+        "date": "2026-11-03",
+        "sender": "account_x",
+        "recipient": "account_y",
+        "amount_pence": 50000,
+        "currency": "GBP"
+      },
+      {
+        "id": "T04",
+        "date": "2026-11-03",
+        "sender": "account_y",
+        "recipient": "account_z",
+        "amount_pence": 49000,
+        "currency": "GBP"
+      },
+      {
+        "id": "T05",
+        "date": "2026-11-03",
+        "sender": "account_z",
+        "recipient": "account_x",
+        "amount_pence": 48000,
+        "currency": "GBP"
+      },
+      {
+        "id": "T06",
+        "date": "2026-11-04",
+        "sender": "bob",
+        "recipient": "carol",
+        "amount_pence": 1000,
+        "currency": "GBP"
+      },
+      {
+        "id": "T07",
+        "date": "2026-11-04",
+        "sender": "business",
+        "recipient": "supplier",
+        "amount_pence": 250000,
+        "currency": "GBP"
+      }
+    ],
+    "limits": "A simple graph/threshold baseline. It does not establish fraud, identity or regulatory compliance."
+  },
+  "regular_income": {
+    "source": {
+      "id": "agentverse-finance-practice-v1",
+      "synthetic": true,
+      "currency": "GBP",
+      "money_unit": "pence",
+      "description": "Authored practice cases. No real accounts, prices, credentials or financial records. Not an accuracy or profitability benchmark."
+    },
+    "scenario_id": "regular_income",
+    "opening_balance_pence": 100000,
+    "closing_balance_pence": 160000,
+    "minimum_balance_pence": 100000,
+    "shortfall_pence": 0,
+    "first_negative_date": null,
+    "timeline": [
+      {
+        "id": "salary",
+        "date": "2026-11-01",
+        "amount_pence": 200000,
+        "balance_after_pence": 300000
+      },
+      {
+        "id": "rent",
+        "date": "2026-11-02",
+        "amount_pence": -90000,
+        "balance_after_pence": 210000
+      },
+      {
+        "id": "bills",
+        "date": "2026-11-03",
+        "amount_pence": -20000,
+        "balance_after_pence": 190000
+      },
+      {
+        "id": "food",
+        "date": "2026-11-04",
+        "amount_pence": -30000,
+        "balance_after_pence": 160000
+      }
+    ],
+    "assumptions": "Known scheduled amounts only; no interest, fees or uncertain income. Same-day events use ID order, not a bank settlement guarantee."
+  },
+  "delayed_salary": {
+    "source": {
+      "id": "agentverse-finance-practice-v1",
+      "synthetic": true,
+      "currency": "GBP",
+      "money_unit": "pence",
+      "description": "Authored practice cases. No real accounts, prices, credentials or financial records. Not an accuracy or profitability benchmark."
+    },
+    "scenario_id": "delayed_salary",
+    "opening_balance_pence": 100000,
+    "closing_balance_pence": 160000,
+    "minimum_balance_pence": -40000,
+    "shortfall_pence": 40000,
+    "first_negative_date": "2026-11-03",
+    "timeline": [
+      {
+        "id": "rent",
+        "date": "2026-11-02",
+        "amount_pence": -90000,
+        "balance_after_pence": 10000
+      },
+      {
+        "id": "bills",
+        "date": "2026-11-03",
+        "amount_pence": -20000,
+        "balance_after_pence": -10000
+      },
+      {
+        "id": "food",
+        "date": "2026-11-04",
+        "amount_pence": -30000,
+        "balance_after_pence": -40000
+      },
+      {
+        "id": "salary",
+        "date": "2026-11-10",
+        "amount_pence": 200000,
+        "balance_after_pence": 160000
+      }
+    ],
+    "assumptions": "Known scheduled amounts only; no interest, fees or uncertain income. Same-day events use ID order, not a bank settlement guarantee."
+  },
+  "market_no_fees": {
+    "source": {
+      "id": "agentverse-finance-practice-v1",
+      "synthetic": true,
+      "currency": "GBP",
+      "money_unit": "pence",
+      "description": "Authored practice cases. No real accounts, prices, credentials or financial records. Not an accuracy or profitability benchmark."
+    },
+    "scenario_id": "rising",
+    "initial_cash_pence": 100000,
+    "final_cash_pence": 150000,
+    "profit_pence": 50000,
+    "shares": 100,
+    "entry_date": "2026-01-06",
+    "entry_price_pence": 1000,
+    "exit_date": "2026-01-08",
+    "exit_price_pence": 1500,
+    "fees_paid_pence": 0,
+    "slippage_bps": 0,
+    "cash_baseline_final_pence": 100000,
+    "limits": "Synthetic buy-and-hold accounting example, not a learned strategy or evidence of future returns. One next-bar purchase and final-bar sale; integer shares, no leverage or tax."
+  },
+  "market_with_fees": {
+    "source": {
+      "id": "agentverse-finance-practice-v1",
+      "synthetic": true,
+      "currency": "GBP",
+      "money_unit": "pence",
+      "description": "Authored practice cases. No real accounts, prices, credentials or financial records. Not an accuracy or profitability benchmark."
+    },
+    "scenario_id": "rising",
+    "initial_cash_pence": 100000,
+    "final_cash_pence": 149300,
+    "profit_pence": 49300,
+    "shares": 99,
+    "entry_date": "2026-01-06",
+    "entry_price_pence": 1000,
+    "exit_date": "2026-01-08",
+    "exit_price_pence": 1500,
+    "fees_paid_pence": 200,
+    "slippage_bps": 0,
+    "cash_baseline_final_pence": 100000,
+    "limits": "Synthetic buy-and-hold accounting example, not a learned strategy or evidence of future returns. One next-bar purchase and final-bar sale; integer shares, no leverage or tax."
+  },
+  "market_with_fees_and_slippage": {
+    "source": {
+      "id": "agentverse-finance-practice-v1",
+      "synthetic": true,
+      "currency": "GBP",
+      "money_unit": "pence",
+      "description": "Authored practice cases. No real accounts, prices, credentials or financial records. Not an accuracy or profitability benchmark."
+    },
+    "scenario_id": "rising",
+    "initial_cash_pence": 100000,
+    "final_cash_pence": 149003,
+    "profit_pence": 49003,
+    "shares": 99,
+    "entry_date": "2026-01-06",
+    "entry_price_pence": 1001,
+    "exit_date": "2026-01-08",
+    "exit_price_pence": 1498,
+    "fees_paid_pence": 200,
+    "slippage_bps": 10,
+    "cash_baseline_final_pence": 100000,
+    "limits": "Synthetic buy-and-hold accounting example, not a learned strategy or evidence of future returns. One next-bar purchase and final-bar sale; integer shares, no leverage or tax."
+  }
+}

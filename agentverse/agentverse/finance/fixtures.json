@@ -1,0 +1,43 @@
+{
+  "source": {
+    "id": "agentverse-finance-practice-v1",
+    "synthetic": true,
+    "currency": "GBP",
+    "money_unit": "pence",
+    "description": "Authored practice cases. No real accounts, prices, credentials or financial records. Not an accuracy or profitability benchmark."
+  },
+  "transactions": [
+    {"id": "T01", "date": "2026-11-01", "sender": "employer", "recipient": "alice", "amount_pence": 200000, "currency": "GBP"},
+    {"id": "T02", "date": "2026-11-02", "sender": "alice", "recipient": "landlord", "amount_pence": 90000, "currency": "GBP"},
+    {"id": "T03", "date": "2026-11-03", "sender": "account_x", "recipient": "account_y", "amount_pence": 50000, "currency": "GBP"},
+    {"id": "T04", "date": "2026-11-03", "sender": "account_y", "recipient": "account_z", "amount_pence": 49000, "currency": "GBP"},
+    {"id": "T05", "date": "2026-11-03", "sender": "account_z", "recipient": "account_x", "amount_pence": 48000, "currency": "GBP"},
+    {"id": "T06", "date": "2026-11-04", "sender": "bob", "recipient": "carol", "amount_pence": 1000, "currency": "GBP"},
+    {"id": "T07", "date": "2026-11-04", "sender": "business", "recipient": "supplier", "amount_pence": 250000, "currency": "GBP"}
+  ],
+  "cashflow": {
+    "regular_income": {
+      "opening_balance_pence": 100000,
+      "events": [
+        {"id": "salary", "date": "2026-11-01", "amount_pence": 200000},
+        {"id": "rent", "date": "2026-11-02", "amount_pence": -90000},
+        {"id": "bills", "date": "2026-11-03", "amount_pence": -20000},
+        {"id": "food", "date": "2026-11-04", "amount_pence": -30000}
+      ]
+    },
+    "delayed_salary": {
+      "opening_balance_pence": 100000,
+      "events": [
+        {"id": "rent", "date": "2026-11-02", "amount_pence": -90000},
+        {"id": "bills", "date": "2026-11-03", "amount_pence": -20000},
+        {"id": "food", "date": "2026-11-04", "amount_pence": -30000},
+        {"id": "salary", "date": "2026-11-10", "amount_pence": 200000}
+      ]
+    }
+  },
+  "markets": {
+    "rising": {"dates": ["2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08"], "prices_pence": [900, 1000, 1200, 1500], "initial_cash_pence": 100000},
+    "falling": {"dates": ["2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08"], "prices_pence": [1100, 1000, 800, 500], "initial_cash_pence": 100000},
+    "flat": {"dates": ["2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08"], "prices_pence": [1000, 1000, 1000, 1000], "initial_cash_pence": 100000}
+  }
+}
