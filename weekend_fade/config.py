@@ -49,10 +49,18 @@ class Config:
     half_spread_bp_big: float = 1.0
     half_spread_bp_other: float = 5.0
     index_slippage_bp: float = 0.5
+    # --- trade management (rule v2, chosen on the first half of weekends, confirmed on the second; see rule_research.py) ---
+    hedge: str = "beta"                      # index notional = beta x stock notional (beta from the last 60 weekday closes)
+    beta_floor: float = 0.3
+    beta_cap: float = 3.0
+    take_profit_frac: float = 0.5            # close once half of the entry gap has been recovered (checked hourly)
+    # --- news check ---
+    use_news_check: bool = True              # skip trades whose move weekend news explains (sentiment_agent.py)
     # --- schedule (US/Eastern) ---
-    signal_time: str = "Sun 17:00"
-    entry_time: str = "Sun 18:00"
-    exit_time: str = "Mon 04:00"
+    signal_time: str = "Sun 17:00"           # gap measured Friday 16:00 -> Sunday 17:00
+    entry_time: str = "Sun 19:00"
+    exit_time: str = "Mon 04:00"             # time stop for anything the take-profit has not closed
+    require_human: bool = False              # fully automatic; risk limits, kill switch and logs still apply
     paper_only: bool = field(default=True)   # there is no order-placing code in this package; this flag documents it
 
 

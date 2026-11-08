@@ -80,6 +80,20 @@ def impact_bp(mid: float, avg_px: float, side: int) -> float:
     return side * log_return_bp(mid, avg_px)
 
 
-def pair_pnl_bp(stock_side: int, stock_entry: float, stock_exit: float, index_entry: float, index_exit: float) -> float:
-    """P&L of a hedged pair per $ of stock notional: stock leg plus the opposite index leg (same dollars)."""
-    return stock_side * log_return_bp(stock_entry, stock_exit) - stock_side * log_return_bp(index_entry, index_exit)
+def pair_pnl_bp(stock_side: int, stock_entry: float, stock_exit: float, index_entry: float, index_exit: float, hedge_ratio: float = 1.0) -> float:
+    """P&L of a hedged pair per $ of stock notional: stock leg plus the opposite index leg (hedge_ratio x the dollars)."""
+    return stock_side * log_return_bp(stock_entry, stock_exit) - stock_side * hedge_ratio * log_return_bp(index_entry, index_exit)
+
+
+def beta(stock_returns: list[float], index_returns: list[float], floor: float = 0.3, cap: float = 3.0) -> float:
+    """Sensitivity of the stock to the index from paired past returns, clipped to [floor, cap]. 1.0 if too little data."""
+    pairs = [(s, i) for s, i in zip(stock_returns, index_returns) if s == s and i == i]
+    if len(pairs) < 20: return 1.0
+    ms = sum(s for s, _ in pairs) / len(pairs); mi = sum(i for _, i in pairs) / len(pairs)
+    cov = sum((s - ms) * (i - mi) for s, i in pairs); var = sum((i - mi) ** 2 for _, i in pairs)
+    return max(floor, min(cap, cov / var)) if var > 0 else 1.0
+
+
+def take_profit_hit(pnl_bp: float, entry_gap_bp: float, frac: float = 0.5) -> bool:
+    """True once the trade has recovered at least `frac` of the gap it was opened on."""
+    return pnl_bp >= frac * abs(entry_gap_bp)

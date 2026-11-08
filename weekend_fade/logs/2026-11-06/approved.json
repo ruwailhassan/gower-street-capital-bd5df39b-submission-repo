@@ -2,38 +2,38 @@
  {
   "proposal": {
    "symbol": "AVGO",
-   "gap_bp": 85.63713215534068,
+   "gap_bp": 84.62162930538378,
    "trigger_bp": 50,
    "action": "short stock / long index",
    "stock_side": -1,
    "sector": "semis",
-   "reason": "AVGO moved +79bp since Friday's close, the Nasdaq-100 perp -6bp, so AVGO is +86bp ahead of the market (trigger 50bp). Bet that part of the gap closes when real prices return at 20:05 ET: short stock / long index.",
+   "reason": "AVGO moved +76bp since Friday's close, the Nasdaq-100 perp -8bp, so AVGO is +85bp ahead of the market (trigger 50bp). Bet that part of the gap closes when real prices return at 20:05 ET: short stock / long index.",
    "inputs": {
     "stock_fri_close": 293.85,
-    "stock_now": 296.185,
+    "stock_now": 296.1,
     "index_fri_close": 26978.0,
-    "index_now": 26960.5,
-    "stock_move_bp": 79.1,
-    "index_move_bp": -6.5
+    "index_now": 26955.5,
+    "stock_move_bp": 76.3,
+    "index_move_bp": -8.3
    }
   },
   "status": "approved",
-  "size_usd": 1332.41,
+  "size_usd": 4722.7,
   "checks": [
    {
     "rule": "enough volume",
     "passed": true,
-    "detail": "last-hour volume $13,324 vs minimum $5,000"
+    "detail": "last-hour volume $47,227 vs minimum $5,000"
    },
    {
     "rule": "fresh price",
     "passed": true,
-    "detail": "last trade 29 min ago vs limit 90"
+    "detail": "last trade 12 min ago vs limit 90"
    },
    {
     "rule": "book can absorb it",
     "passed": true,
-    "detail": "estimated impact 2.34bp vs limit 25bp"
+    "detail": "estimated impact 2.67bp vs limit 25bp"
    },
    {
     "rule": "trade count",
@@ -43,119 +43,15 @@
    {
     "rule": "gross exposure",
     "passed": true,
-    "detail": "would take gross to $2,665 vs limit $250,000"
+    "detail": "would take gross to $9,445 vs limit $250,000"
    },
    {
     "rule": "sector concentration",
     "passed": true,
     "detail": "0 'semis' trades on this side already, limit 3"
    }
-  ]
- },
- {
-  "proposal": {
-   "symbol": "IREN",
-   "gap_bp": 174.89941398928372,
-   "trigger_bp": 150,
-   "action": "short stock / long index",
-   "stock_side": -1,
-   "sector": "crypto-linked",
-   "reason": "IREN moved +168bp since Friday's close, the Nasdaq-100 perp -6bp, so IREN is +175bp ahead of the market (trigger 150bp). Bet that part of the gap closes when real prices return at 20:05 ET: short stock / long index.",
-   "inputs": {
-    "stock_fri_close": 21.609,
-    "stock_now": 21.976,
-    "index_fri_close": 26978.0,
-    "index_now": 26960.5,
-    "stock_move_bp": 168.4,
-    "index_move_bp": -6.5
-   }
-  },
-  "status": "approved",
-  "size_usd": 511.15,
-  "checks": [
-   {
-    "rule": "enough volume",
-    "passed": true,
-    "detail": "last-hour volume $5,111 vs minimum $5,000"
-   },
-   {
-    "rule": "fresh price",
-    "passed": true,
-    "detail": "last trade -1 min ago vs limit 90"
-   },
-   {
-    "rule": "book can absorb it",
-    "passed": true,
-    "detail": "estimated impact 2.73bp vs limit 25bp"
-   },
-   {
-    "rule": "trade count",
-    "passed": true,
-    "detail": "limit 15 trades"
-   },
-   {
-    "rule": "gross exposure",
-    "passed": true,
-    "detail": "would take gross to $3,687 vs limit $250,000"
-   },
-   {
-    "rule": "sector concentration",
-    "passed": true,
-    "detail": "0 'crypto-linked' trades on this side already, limit 3"
-   }
-  ]
- },
- {
-  "proposal": {
-   "symbol": "NVDA",
-   "gap_bp": 51.38232543885757,
-   "trigger_bp": 50,
-   "action": "short stock / long index",
-   "stock_side": -1,
-   "sector": "semis",
-   "reason": "NVDA moved +45bp since Friday's close, the Nasdaq-100 perp -6bp, so NVDA is +51bp ahead of the market (trigger 50bp). Bet that part of the gap closes when real prices return at 20:05 ET: short stock / long index.",
-   "inputs": {
-    "stock_fri_close": 186.69,
-    "stock_now": 187.53,
-    "index_fri_close": 26978.0,
-    "index_now": 26960.5,
-    "stock_move_bp": 44.9,
-    "index_move_bp": -6.5
-   }
-  },
-  "status": "approved",
-  "size_usd": 17359.87,
-  "checks": [
-   {
-    "rule": "enough volume",
-    "passed": true,
-    "detail": "last-hour volume $173,599 vs minimum $5,000"
-   },
-   {
-    "rule": "fresh price",
-    "passed": true,
-    "detail": "last trade -1 min ago vs limit 90"
-   },
-   {
-    "rule": "book can absorb it",
-    "passed": true,
-    "detail": "estimated impact 1.06bp vs limit 25bp"
-   },
-   {
-    "rule": "trade count",
-    "passed": true,
-    "detail": "limit 15 trades"
-   },
-   {
-    "rule": "gross exposure",
-    "passed": true,
-    "detail": "would take gross to $38,407 vs limit $250,000"
-   },
-   {
-    "rule": "sector concentration",
-    "passed": true,
-    "detail": "1 'semis' trades on this side already, limit 3"
-   }
-  ]
+  ],
+  "beta": 1.574,
+  "news": "news does not explain the move (no relevant news, confidence 0.85)"
  }
 ]

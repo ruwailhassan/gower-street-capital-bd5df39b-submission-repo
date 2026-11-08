@@ -1,0 +1,38 @@
+{
+ "model": "gemini-3.5-flash-lite",
+ "probes": [
+  {
+   "q": "What is your training data cutoff date? Answer with a month and year only.",
+   "a": "March 2026"
+  },
+  {
+   "q": "What happened to IREN Limited stock on Monday 12 October 2026, and did reports that Anthropic was its customer move the price? If you do not know, say UNKNOWN.",
+   "a": "UNKNOWN"
+  },
+  {
+   "q": "How did Nvidia stock perform on Monday 13 July 2026? If you do not know, say UNKNOWN.",
+   "a": "UNKNOWN"
+  },
+  {
+   "q": "Did SanDisk stock rise or fall on Monday 13 July 2026? If you do not know, say UNKNOWN.",
+   "a": "UNKNOWN"
+  },
+  {
+   "q": "What was the biggest news about Micron Technology in October 2026? If you do not know, say UNKNOWN.",
+   "a": "UNKNOWN"
+  }
+ ],
+ "agreement_with_named_run": 0.9606299212598425,
+ "orig_action": {
+  "kept_n": 211,
+  "kept_mean_bp": 82.47305702758602,
+  "skipped_n": 43,
+  "skipped_mean_bp": 25.200705308773824
+ },
+ "blind_action": {
+  "kept_n": 213,
+  "kept_mean_bp": 83.84904332487756,
+  "skipped_n": 41,
+  "skipped_mean_bp": 15.258515436561055
+ }
+}

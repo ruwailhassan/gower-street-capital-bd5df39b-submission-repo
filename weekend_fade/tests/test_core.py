@@ -95,3 +95,33 @@ def test_gross_exposure_limit_holds():
     mk = {s: {"hour_volume_usd": 1e6, "minutes_since_last_trade": 1, "book_impact_bp": 1} for s in ("AAA", "BBB", "CCC")}
     res = size_and_check(props, mk, cfg)
     assert sum(r["status"] == "approved" for r in res) == 1   # each pair uses $20k gross (stock + hedge)
+
+
+# ---- rule v2: beta hedge, take-profit, news decision ----
+from weekend_fade.signals import beta, take_profit_hit
+from weekend_fade.sentiment_agent import decision
+
+
+def test_beta_recovers_known_sensitivity_and_falls_back():
+    idx = [0.01 * ((i % 7) - 3) for i in range(60)]
+    assert beta([2 * x for x in idx], idx) == pytest.approx(2.0)
+    assert beta([1.0] * 5, [0.5] * 5) == 1.0                  # too little data -> 1:1
+    assert beta([10 * x for x in idx], idx) == 3.0            # clipped at the cap
+
+
+def test_beta_hedged_pair_removes_market_move():
+    # stock beta 2 falls 2% because the index fell 1%: hedged with ratio 2 the pair makes ~0
+    assert pair_pnl_bp(+1, 100, 100 * math.exp(-0.02), 50, 50 * math.exp(-0.01), hedge_ratio=2.0) == pytest.approx(0, abs=1e-6)
+
+
+def test_take_profit_needs_half_the_gap():
+    assert take_profit_hit(80, -150) and not take_profit_hit(74, -150) and not take_profit_hit(-20, 300)
+
+
+def test_news_decision_is_a_fixed_rule():
+    news = {"explained_by_news": True, "direction_consistent": True, "confidence": 0.9, "news_type": "merger or acquisition"}
+    assert decision(news, 3)[0] == "skip"
+    assert decision({**news, "confidence": 0.5}, 3)[0] == "trade"            # not confident enough
+    assert decision({**news, "direction_consistent": False}, 3)[0] == "trade" # news points the other way
+    assert decision(None, 0)[0] == "trade"                                   # no headlines: noise, no model call
+    assert decision(None, 4)[0] == "skip"                                    # model unavailable: fail safe
