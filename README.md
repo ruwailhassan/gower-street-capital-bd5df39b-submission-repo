@@ -81,11 +81,11 @@ Full table: `weekend_fade/results/final_comparison.csv`.
 
 | | Fair fills | Realistic fills (25% of hourly range) |
 |---|---|---|
-| Backtest Sharpe (95% CI) | 5.9 (3.5–8.3) | **3.0 (0.0–6.0)** |
-| Harvey–Liu haircut for 216 rules tried | 3.1 | not significant |
-| Plus 5bp per side extra cost | 4.0 | 0.4 |
+| Backtest Sharpe (95% CI) | 5.9 (3.4–8.3) | **2.6 (−0.4 to 5.5)** |
+| Harvey–Liu haircut for 216 rules tried | 3.0 | not significant |
+| Plus 5bp per side extra cost | 3.9 | −0.2 |
 
-Planning assumption for live trading: **Sharpe 1–2**, our judgement between those cases. Only the forward test on real
+Planning range for live trading: **Sharpe 0–2**, our judgement between those cases. Sizing uses the 16:00–17:00 volume, the last full hour before the scan. Only the forward test on real
 order-book fills can settle it. 29 weekly observations; margin and funding not modelled.
 
 ![Cumulative return under three fill assumptions](weekend_fade/results/charts/equity_v2.png)
@@ -123,7 +123,7 @@ original rule, kept as the baseline); everything else describes v2.
 ## Limits
 
 - **Execution decides it.** At the worst price of the hour the edge is gone. The forward test (`docs/FORWARD_TEST.md`) measures real order-book fills.
-- **Small.** Volume-capped sizes average about $14k per trade: hundreds of dollars a week of paper P&L, not thousands.
+- **Small.** Volume-capped sizes average about $8.5k per trade: roughly $100–260 a week of paper P&L, not thousands.
 - **In-sample period of 29 weekends.** The earlier Nov 2025–Apr 2026 period (4-hour data only) points the same way but much more weakly.
 - **Historical news** is searched today, so its ranking may differ slightly from what was visible live; the live agent fetches news in real time.
 - **Venue risk.** trade[XYZ] changed its weekend pricing rules in April and August 2026; a further change could remove the effect.

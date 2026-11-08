@@ -53,7 +53,7 @@ def panel():
             rng = [float(Hh.at[at(sun, h), k] - Ll.at[at(sun, h), k]) if pd.notna(Hh.at[at(sun, h), k]) else 0.0 for h in HOURS[1:]]
             rows.append({"date": str(sun.date()), "stock": k, "big": k in BIG, "gap": gap, "beta": float(np.clip(beta, 0.3, 3.0)), "rng": rng,
                          "vol_ratio": vol_ratio, "fee": 0.9 if growth.get(k) else 9.0, "s": path_s, "i": path_i,
-                         "hour_usd": float(U.at[at(sun, 17), k]) if pd.notna(U.at[at(sun, 17), k]) else 0.0})
+                         "hour_usd": float(U.at[at(sun, 16), k]) if pd.notna(U.at[at(sun, 16), k]) else 0.0})   # 16:00-17:00 candle: last full hour before the 17:00 scan
     return pd.DataFrame(rows)
 
 
