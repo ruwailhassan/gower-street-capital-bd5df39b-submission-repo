@@ -5,7 +5,7 @@
   python -m weekend_fade.agent monitor    # hourly 20:00-03:00 ET: take profit once half the gap has closed
   python -m weekend_fade.agent exit       # Mon 04:00 ET: close everything still open, report P&L after fees
   python -m weekend_fade.agent autopilot  # runs all of the above on schedule, unattended
-  python -m weekend_fade.agent halt       # kill switch: blocks entries; 'exit' then flattens everything
+  python -m weekend_fade.agent halt       # kill switch: blocks scans/entries; next hourly check (or 'exit') flattens
   python -m weekend_fade.agent status     # recent log lines
 
 Who decides what:
@@ -111,6 +111,10 @@ def cmd_scan(args) -> None:
         size_guess = min(CFG.max_usd_big if s in BIG else CFG.max_usd_other, CFG.max_share_of_hour_volume * act["hour_volume_usd"])
         fill = vwap_fill(bk["asks"] if p.stock_side > 0 else bk["bids"], size_guess) if p.stock_side else None
         market[s] = act | {"book_impact_bp": round(impact_bp(bk["mid"], fill[0], p.stock_side), 2) if fill else None}
+        if p.stock_side and CFG.hedge == "beta":        # hedge ratio is needed before the risk check: gross exposure counts the hedge leg
+            sr, ir = daily_returns(s, fri), daily_returns(INDEX, fri)
+            common = sorted(set(sr) & set(ir))[-60:]
+            market[s]["beta"] = calc_beta([sr[x] for x in common], [ir[x] for x in common], CFG.beta_floor, CFG.beta_cap)
         proposals.append(p); time.sleep(0.15)
     decisions = size_and_check(proposals, market, CFG)
     for d in decisions: log(wk, "engine_decision", **d)
@@ -152,9 +156,7 @@ def cmd_scan(args) -> None:
             action, why = "trade", "news check off"
         if action != "trade":
             say(f"[SKIPPED] {s:6s} gap {p['gap_bp']:+6.0f}bp  {why}"); continue
-        sr, ir = daily_returns(s, fri), daily_returns(INDEX, fri)
-        common = sorted(set(sr) & set(ir))[-60:]
-        b = calc_beta([sr[x] for x in common], [ir[x] for x in common], CFG.beta_floor, CFG.beta_cap) if CFG.hedge == "beta" else 1.0
+        b = market[s].get("beta", 1.0)
         d["beta"] = round(b, 3); d["news"] = why
         if CFG.require_human or args.human:
             ok = input(f"Approve PAPER trade {s} ({p['action']}, ${d['size_usd']:,.0f}, beta {b:.2f})? [y/N] ").strip().lower() == "y"
@@ -210,6 +212,10 @@ def cmd_monitor(args) -> None:
     wk = weekend_id(now_et()); path = wk_dir(wk) / "positions.json"
     if not path.exists(): return
     positions = json.loads(path.read_text())
+    if HALT.exists():                                   # kill switch: flatten everything at this check
+        for pos in positions:
+            if pos["status"] == "open": _close(wk, pos, "kill switch")
+        path.write_text(json.dumps(positions, indent=1, default=str)); return
     ix_mid = hl.book(f"{DEX}:{INDEX}")["mid"]
     for pos in positions:
         if pos["status"] != "open": continue
@@ -260,7 +266,7 @@ def cmd_autopilot(args) -> None:
 def cmd_halt(args) -> None:
     LOGS.mkdir(exist_ok=True)
     if args.off: HALT.unlink(missing_ok=True); log(weekend_id(now_et()), "kill_switch", state="off"); say("Kill switch OFF.")
-    else: HALT.write_text(now_et().isoformat()); log(weekend_id(now_et()), "kill_switch", state="on"); say("Kill switch ON: no new entries; run 'exit' to flatten now.")
+    else: HALT.write_text(now_et().isoformat()); log(weekend_id(now_et()), "kill_switch", state="on"); say("Kill switch ON: no new scans or entries; open positions close at the next hourly check (or now with 'exit').")
 
 
 def cmd_status(args) -> None:

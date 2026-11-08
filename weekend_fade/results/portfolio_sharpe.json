@@ -1,0 +1,74 @@
+{
+ "fair": {
+  "trades": 153,
+  "avg_size_usd": 9293.100703737908,
+  "avg_gross_usd": 121354.62574878904,
+  "max_gross_usd": 245177.00239319622,
+  "weekly_pnl_mean_usd": 315.21825241467235,
+  "weekly_pnl_sd_usd": 384.7921361381329,
+  "total_pnl_usd": 9141.329320025498,
+  "weekends_positive": "24/29",
+  "sharpe_annual": 5.907270265186799,
+  "sharpe_95ci": [
+   3.479952951102014,
+   8.334587579271583
+  ],
+  "sharpe_bootstrap_95ci": [
+   3.775786353253421,
+   8.724863138487049
+  ],
+  "deflated_sharpe_prob": 0.9821003631963952,
+  "deflated_benchmark_sharpe_annual": 3.307563878929802,
+  "max_drawdown_usd": -388.7736198991656,
+  "worst_week_usd": -388.77361989916557,
+  "worst_trade_usd": -539.3561586437384
+ },
+ "range25": {
+  "trades": 153,
+  "avg_size_usd": 9293.100703737908,
+  "avg_gross_usd": 121354.62574878904,
+  "max_gross_usd": 245177.00239319622,
+  "weekly_pnl_mean_usd": 133.51725398675927,
+  "weekly_pnl_sd_usd": 316.7819812782699,
+  "total_pnl_usd": 3872.000365616019,
+  "weekends_positive": "21/29",
+  "sharpe_annual": 3.039335150729622,
+  "sharpe_95ci": [
+   0.03860015826817172,
+   6.0400701431910715
+  ],
+  "sharpe_bootstrap_95ci": [
+   0.4822219876784678,
+   6.705483096302007
+  ],
+  "deflated_sharpe_prob": 0.4304613028368042,
+  "deflated_benchmark_sharpe_annual": 3.307563878929802,
+  "max_drawdown_usd": -714.2305898517131,
+  "worst_week_usd": -639.8908662666146,
+  "worst_trade_usd": -621.1927043282165
+ },
+ "range50": {
+  "trades": 153,
+  "avg_size_usd": 9293.100703737908,
+  "avg_gross_usd": 121354.62574878904,
+  "max_gross_usd": 245177.00239319622,
+  "weekly_pnl_mean_usd": -78.19681593845526,
+  "weekly_pnl_sd_usd": 307.9803562126198,
+  "total_pnl_usd": -2267.7076622152026,
+  "weekends_positive": "11/29",
+  "sharpe_annual": -1.8309130680365595,
+  "sharpe_95ci": [
+   -3.9927395071615384,
+   0.330913371088419
+  ],
+  "sharpe_bootstrap_95ci": [
+   -3.875695320840458,
+   0.7416885511767887
+  ],
+  "deflated_sharpe_prob": 1.5906553392291376e-06,
+  "deflated_benchmark_sharpe_annual": 3.307563878929802,
+  "max_drawdown_usd": -2880.915974687802,
+  "worst_week_usd": -1152.1844921817196,
+  "worst_trade_usd": -713.0292500126944
+ }
+}

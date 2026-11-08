@@ -25,7 +25,7 @@ discipline: every decision traced from raw prices to output, real news separated
 ```bash
 cd weekend_fade && uv sync && cd ..                                   # Python 3.12
 echo "GEMINI_API_KEY=..." > weekend_fade/.env                          # for the news agent (git-ignored; without it the agent fails safe and skips every trade)
-weekend_fade/.venv/bin/python -m pytest weekend_fade/tests -q          # 15 tests
+weekend_fade/.venv/bin/python -m pytest weekend_fade/tests -q          # 16 tests
 weekend_fade/.venv/bin/python -m weekend_fade.agent scan               # measure gaps now, news check, queue trades
 weekend_fade/.venv/bin/python -m weekend_fade.agent autopilot          # run tonight unattended: 17:00 / 19:00 / hourly / 04:00 ET
 weekend_fade/.venv/bin/python -m weekend_fade.agent halt               # kill switch (halt --off to clear)
@@ -38,6 +38,7 @@ Reproduce the evidence. The exact hourly candles used (Hyperliquid public data, 
 ```bash
 weekend_fade/.venv/bin/python -m weekend_fade.final_backtest           # headline table: v1 vs v2, with/without news, three fill assumptions
 weekend_fade/.venv/bin/python -m weekend_fade.pitch_charts             # charts + example trades + t-tests (results/charts/)
+weekend_fade/.venv/bin/python -m weekend_fade.portfolio_sharpe         # dollar-book Sharpe with CI, deflated Sharpe, drawdown
 weekend_fade/.venv/bin/python -m weekend_fade.backtest                 # rule v1 + baselines + placebo (add --fetch to download a fresh window)
 weekend_fade/.venv/bin/python -m weekend_fade.analysis                 # statistical tests behind the explainer
 weekend_fade/.venv/bin/python -m weekend_fade.rule_research            # 216 entry/exit/hedge/sizing variants, train/test
@@ -68,12 +69,17 @@ Example decision from the live log (8 Nov 2026):
 spread, index slippage. Hyperliquid has no historical order books, so three fill assumptions bracket the real cost.
 Full table: `weekend_fade/results/final_comparison.csv`.
 
-| Rule | Fills | Trades | Avg / trade | Win rate | t (by weekend) | Sharpe | Weekends + |
+| Rule | Fills | Trades | Avg / trade | Win rate | t (by weekend) | Sharpe (per-trade avg) | Weekends + |
 |---|---|---|---|---|---|---|---|
 | v1: Sun 18:00, 1:1, exit 04:00 | fair | 254 | +0.76% | 68% | 4.1 | 5.5 | 23/29 |
 | **v2 + news filter** | **fair** | **211** | **+0.82%** | **77%** | **8.0** | **10.7** | **28/29** |
 | **v2 + news filter** | **a bit worse** (25% of the hour's range) | **211** | **+0.43%** | **65%** | **4.4** | **5.9** | **23/29** |
 | v2 + news filter | worst price of the hour | 211 | −0.05% | 54% | −1.2 | −1.6 | 15/29 |
+
+**Portfolio Sharpe** (`portfolio_sharpe.py`): the Sharpe column above uses average returns per trade and ignores sizes. With real
+dollar positions and every live limit applied (153 trades, average position $9.3k, average gross $121k), weekly dollar P&L gives
+an annualised Sharpe of **5.9 (95% CI 3.5–8.3)** at fair fills, 3.0 (0.0–6.0) with slightly worse fills and −1.8 at the worst price.
+Deflated Sharpe probability for the 216 variants tried: 0.98 at fair fills, 0.43 with slightly worse fills. Max drawdown −$389 (fair).
 
 ![Cumulative return under three fill assumptions](weekend_fade/results/charts/equity_v2.png)
 

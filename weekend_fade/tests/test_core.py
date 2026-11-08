@@ -125,3 +125,12 @@ def test_news_decision_is_a_fixed_rule():
     assert decision({**news, "direction_consistent": False}, 3)[0] == "trade" # news points the other way
     assert decision(None, 0)[0] == "trade"                                   # no headlines: noise, no model call
     assert decision(None, 4)[0] == "skip"                                    # model unavailable: fail safe
+
+
+def test_gross_exposure_counts_the_beta_sized_hedge():
+    cfg = Config(max_gross_usd=50_000)
+    props = [_mk(s, -300) for s in ("AAA", "BBB")]
+    one = {s: {"hour_volume_usd": 1e6, "minutes_since_last_trade": 1, "book_impact_bp": 1} for s in ("AAA", "BBB")}
+    two = {s: v | {"beta": 2.0} for s, v in one.items()}
+    assert sum(r["status"] == "approved" for r in size_and_check(props, one, cfg)) == 2   # $10k + $10k hedge = $20k each
+    assert sum(r["status"] == "approved" for r in size_and_check(props, two, cfg)) == 1   # $10k + $20k hedge = $30k each
