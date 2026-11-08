@@ -1,0 +1,74 @@
+{
+ "train_end": "2026-07-26",
+ "all": {
+  "trades": 211,
+  "avg_pct": 0.8247305702758603,
+  "t": 8.013405025463413,
+  "p": 9.999255250284099e-09,
+  "weekends_pos": "28/29"
+ },
+ "train": {
+  "trades": 111,
+  "avg_pct": 0.8702518293144592,
+  "t": 5.860740493268282,
+  "p": 5.585524674345461e-05,
+  "weekends_pos": "14/14"
+ },
+ "test": {
+  "trades": 100,
+  "avg_pct": 0.774201972743015,
+  "t": 5.323531746503696,
+  "p": 0.00010748295707397461,
+  "weekends_pos": "14/15"
+ },
+ "win": {
+  "date": "2026-07-12",
+  "stock": "NVDA",
+  "gap_pct": 0.708568250938394,
+  "net_pct": 0.9858701590831244,
+  "hold_h": 3,
+  "beta": 1.0998677501763183,
+  "size_usd": 50000.0,
+  "pnl_usd": 492.93507954156223,
+  "action": "trade",
+  "answer": {
+   "explained_by_news": false,
+   "direction_consistent": false,
+   "confidence": 0.9,
+   "news_type": "no relevant news",
+   "key_headline_ids": [],
+   "reasoning": "The headlines consist of generic analyst quality lists, price targets recap, and institutional holdings mentions. These are opinion/recap articles rather than fresh company-specific catalysts explaining the +71 bp relative move."
+  },
+  "headlines": [
+   "Here\u2019s Why NVIDIA (NVDA) is One of the Best Quality Stocks to Buy According to Wall Street Analysts - Yahoo Finance",
+   "Nvidia Stock Has Been Flat, But NVDA Price Targets are Higher - Shorting Puts Works - Yahoo Finance",
+   "NVIDIA Corporation (NVDA) Is A Top AI Stock In D. E. Shaw\u2019s Holdings - Yahoo Finance"
+  ]
+ },
+ "skip": {
+  "date": "2026-06-14",
+  "stock": "NBIS",
+  "gap_pct": 2.556708202601029,
+  "net_pct": -2.2111028984457306,
+  "hold_h": 9,
+  "beta": 1.0,
+  "size_usd": 10000.0,
+  "pnl_usd": -221.11028984457306,
+  "action": "skip",
+  "answer": {
+   "explained_by_news": true,
+   "direction_consistent": true,
+   "confidence": 0.9,
+   "news_type": "other",
+   "key_headline_ids": [
+    1
+   ],
+   "reasoning": "Nebius joining the Nasdaq-100 index drives strong index flows and explains the large relative outperformance."
+  },
+  "headlines": [
+   "Nebius Stock: Addressing The Current AI Constraints As It Grows (NASDAQ:NBIS) - Seeking Alpha",
+   "Nebius Joins Nasdaq-100 As AI Infrastructure Growth Meets Index Flows - Yahoo Finance",
+   "Nebius Stock (NBIS) Opinions on NVIDIA CEO Praise and AI Infrastructure Growth | NBIS Stock News - Quiver Quantitative"
+  ]
+ }
+}

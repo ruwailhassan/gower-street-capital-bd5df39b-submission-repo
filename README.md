@@ -24,7 +24,7 @@ discipline: every decision traced from raw prices to output, real news separated
 
 ```bash
 cd weekend_fade && uv sync && cd ..                                   # Python 3.12
-echo "GEMINI_API_KEY=..." > weekend_fade/.env                          # for the news agent (git-ignored)
+echo "GEMINI_API_KEY=..." > weekend_fade/.env                          # for the news agent (git-ignored; without it the agent fails safe and skips every trade)
 weekend_fade/.venv/bin/python -m pytest weekend_fade/tests -q          # 15 tests
 weekend_fade/.venv/bin/python -m weekend_fade.agent scan               # measure gaps now, news check, queue trades
 weekend_fade/.venv/bin/python -m weekend_fade.agent autopilot          # run tonight unattended: 17:00 / 19:00 / hourly / 04:00 ET
@@ -32,16 +32,20 @@ weekend_fade/.venv/bin/python -m weekend_fade.agent halt               # kill sw
 weekend_fade/.venv/bin/python -m weekend_fade.agent status             # recent decisions
 ```
 
-Reproduce the evidence:
+Reproduce the evidence. The exact hourly candles used (Hyperliquid public data, 14 Apr – 8 Nov 2026) are committed in
+`weekend_fade/data/`, because Hyperliquid only serves the most recent ~5,000 hours: re-downloading later gives a shifted window.
 
 ```bash
-weekend_fade/.venv/bin/python -m weekend_fade.backtest --fetch         # 1h candles from Hyperliquid's public API (~5 min), rule v1 + baselines
+weekend_fade/.venv/bin/python -m weekend_fade.final_backtest           # headline table: v1 vs v2, with/without news, three fill assumptions
+weekend_fade/.venv/bin/python -m weekend_fade.pitch_charts             # charts + example trades + t-tests (results/charts/)
+weekend_fade/.venv/bin/python -m weekend_fade.backtest                 # rule v1 + baselines + placebo (add --fetch to download a fresh window)
 weekend_fade/.venv/bin/python -m weekend_fade.analysis                 # statistical tests behind the explainer
 weekend_fade/.venv/bin/python -m weekend_fade.rule_research            # 216 entry/exit/hedge/sizing variants, train/test
 weekend_fade/.venv/bin/python -m weekend_fade.news_backtest            # news filter on all 254 past trades (~7 min)
 weekend_fade/.venv/bin/python -m weekend_fade.news_leakage_check       # can the model 'remember' the future? (blinded rerun)
-weekend_fade/.venv/bin/python -m weekend_fade.final_backtest           # headline table: v1 vs v2, with/without news, three fill assumptions
 ```
+
+(`news_backtest` and `news_leakage_check` call Google News and Gemini again; their saved outputs are in `results/`.)
 
 ## The trading rule (v2)
 
@@ -71,17 +75,33 @@ Full table: `weekend_fade/results/final_comparison.csv`.
 | **v2 + news filter** | **a bit worse** (25% of the hour's range) | **211** | **+0.43%** | **65%** | **4.4** | **5.9** | **23/29** |
 | v2 + news filter | worst price of the hour | 211 | −0.05% | 54% | −1.2 | −1.6 | 15/29 |
 
-**Why we believe it is real**
-- **Placebo:** the same rule on 119 weeknights earns nothing (−0.08%, t −0.5). The weekend-minus-weeknight slope difference has t −3.8.
+![Cumulative return under three fill assumptions](weekend_fade/results/charts/equity_v2.png)
+
+**Why we believe it is real** (rule v2 + news filter, fair fills, unless stated)
+- **Unseen data:** rule v2 was chosen from 216 variants using only the first 14 weekends (to 19 Jul). On the 15 later weekends
+  it never saw: +0.77% per trade, t 5.3 (p 0.0001), 14 of 15 weekends positive (`results/charts/out_of_sample.png`).
+- **Placebo:** the same measurement on weeknights, when perps follow real prices, shows nothing (slope t +0.8; strategy −0.08%, t −0.5).
+  The weekend-minus-weeknight slope difference has t −3.8.
 - **Mechanism timing:** most of the gain arrives in the hour of the 20:05 ET switch to real prices.
-- **Robustness:** sign-flip permutation p < 0.001; bootstrap 95% interval of the weekly mean excludes zero; leave-one-weekend-out t ≥ 3.8;
-  still significant without the best 3 weekends; present in big names alone (slope −0.47, t −5.9).
-- **Rule v2 was chosen on the first half of weekends only**; on the unseen second half its Sharpe was 6.6 vs 3.8 for v1.
+- **Robustness:** none of 100,000 random sign flips of the weekly results beat it; bootstrap 95% interval of the mean +0.57% to
+  +0.94% per trade; dropping any one weekend leaves t ≥ 7.7, dropping the best three t 7.9; works in the 9 big names alone
+  (t 2.9) and in the other stocks (t 7.9). Betting the other way (momentum) loses (−0.98% per weekend, t −5.6).
 - **News filter:** kept trades +0.82% vs skipped +0.25% (Welch p 0.04; skipping 43 random trades does this well only 0.9% of
   the time); holds in both halves. Trades with no weekend headlines at all revert most (+1.06%).
 - **No look-ahead in the news test:** all 502 headlines are timestamped Fri 16:00–Sun 17:00 ET; prompts contain no dates and
   no prices after Sun 17:00; the model's training cutoff is March 2026 and it answered "unknown" to every outcome question;
   a blinded rerun with company names removed made the same call 96% of the time and filtered as well.
+
+**Two example trades** (backtest, `results/charts/numbers.json`)
+- **Traded, NVDA, weekend of 12 Jul 2026:** NVDA +0.71% ahead of the Nasdaq-100 at Sunday 17:00. Three headlines, judged
+  "recap/opinion, no fresh news" → short $50k NVDA, long $55k index perp (beta 1.10) at 19:00; half the gap recovered by 21:00,
+  exited 22:00: **+0.99% = +$493** after costs (`results/charts/trade_win.png`).
+- **Skipped by the news agent, NBIS, weekend of 14 Jun 2026:** NBIS +2.56% ahead. Saturday headline *"Nebius Joins Nasdaq-100
+  As AI Infrastructure Growth Meets Index Flows"* → explained by news, confidence 0.9 → no trade. Fading it would have lost
+  **2.21% (−$221 on $10k)**; it kept rising after real prices returned (`results/charts/trade_skip.png`).
+
+`results/BACKTEST.md`, `backtest.json`, `equity.png`, `weekend_trades.csv` and the explainer page describe rule v1 (the
+original rule, kept as the baseline); everything else describes v2.
 
 ## Limits
 
@@ -94,6 +114,7 @@ Full table: `weekend_fade/results/final_comparison.csv`.
 ## Data and licences
 
 - **Hyperliquid public info API:** candles, live order books, market metadata (trade[XYZ] markets). Public market data, no key.
+  A snapshot of the hourly candles is committed in `weekend_fade/data/` for reproducibility.
 - **Google News RSS search:** weekend headlines (titles, sources, timestamps only).
 - **Google Gemini API** (`gemini-3.5-flash-lite`): news judgements; requires your own key.
 
