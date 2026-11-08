@@ -69,15 +69,14 @@ Example decision from the live log (8 Nov 2026):
 spread, index slippage. Hyperliquid has no historical order books, so three fill assumptions bracket the real cost.
 Full table: `weekend_fade/results/final_comparison.csv`.
 
-| Rule | Fills | Trades | Avg / trade | Win rate | t (by weekend) | Sharpe (per-trade avg) | Weekends + |
-|---|---|---|---|---|---|---|---|
-| v1: Sun 18:00, 1:1, exit 04:00 | fair | 254 | +0.76% | 68% | 4.1 | 5.5 | 23/29 |
-| **v2 + news filter** | **fair** | **211** | **+0.82%** | **77%** | **8.0** | **10.7** | **28/29** |
-| **v2 + news filter** | **a bit worse** (25% of the hour's range) | **211** | **+0.43%** | **65%** | **4.4** | **5.9** | **23/29** |
-| v2 + news filter | worst price of the hour | 211 | −0.05% | 54% | −1.2 | −1.6 | 15/29 |
+| Rule | Fills | Trades | Avg / trade | Win rate | t (by weekend) | Weekends + |
+|---|---|---|---|---|---|---|
+| v1: Sun 18:00, 1:1, exit 04:00 | fair | 254 | +0.76% | 68% | 4.1 | 23/29 |
+| **v2 + news filter** | **fair** | **211** | **+0.82%** | **77%** | **8.0** | **28/29** |
+| **v2 + news filter** | **a bit worse** (25% of the hour's range) | **211** | **+0.43%** | **65%** | **4.4** | **23/29** |
+| v2 + news filter | worst price of the hour | 211 | −0.05% | 54% | −1.2 | 15/29 |
 
-**Sharpe, calibrated** (`portfolio_sharpe.py`; dollar book with every live limit, weekly P&L, annualised). The per-trade
-"Sharpe" column above ignores sizes and is not a portfolio Sharpe.
+**Sharpe, calibrated** (`portfolio_sharpe.py`; dollar book with every live limit, weekly P&L, annualised).
 
 | | Fair fills | Realistic fills (25% of hourly range) |
 |---|---|---|
