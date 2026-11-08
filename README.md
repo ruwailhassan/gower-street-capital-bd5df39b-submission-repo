@@ -91,8 +91,8 @@ order-book fills can settle it. 29 weekly observations; margin and funding not m
 ![Cumulative return under three fill assumptions](weekend_fade/results/charts/equity_v2.png)
 
 **Why we believe it is real** (rule v2 + news filter, fair fills, unless stated)
-- **Unseen data:** rule v2 was chosen from 216 variants using only the first 14 weekends (to 19 Jul). On the 15 later weekends
-  it never saw: +0.77% per trade, t 5.3 (p 0.0001), 14 of 15 weekends positive (`results/charts/out_of_sample.png`).
+- **Unseen data:** selecting from 216 variants using only the first 14 weekends picks the same entry, exit and hedge
+  as rule v2 (Sharpe 6.4 unseen); all 216 variants are profitable on the 15 later weekends. Rule v2 on those weekends: +0.77% per trade, t 5.3 (p 0.0001), 14 of 15 weekends positive (`results/charts/out_of_sample.png`).
 - **Placebo:** the same measurement on weeknights, when perps follow real prices, shows nothing (slope t +0.8; strategy −0.08%, t −0.5).
   The weekend-minus-weeknight slope difference has t −3.8.
 - **Mechanism timing:** most of the gain arrives in the hour of the 20:05 ET switch to real prices.
