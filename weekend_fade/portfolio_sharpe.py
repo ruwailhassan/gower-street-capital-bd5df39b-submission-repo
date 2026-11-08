@@ -21,6 +21,13 @@ from .config import DEFAULT as C, SECTOR
 from .rule_research import panel, simulate
 
 EULER = 0.5772156649
+EXTRA_COST_BP = 5.0
+
+
+def harvey_liu(sr_w, n_obs, n_trials):
+    """Harvey & Liu (2015) Bonferroni haircut: inflate the p-value by the number of rules tried, convert back to a Sharpe."""
+    t = sr_w * np.sqrt(n_obs); p = 2 * stats.t.sf(abs(t), n_obs - 1); p_adj = min(1.0, p * n_trials)
+    return 0.0 if p_adj >= 1 else float(stats.t.isf(p_adj / 2, n_obs - 1) / np.sqrt(n_obs) * np.sqrt(52))
 
 
 def book(T):
@@ -61,11 +68,15 @@ def main():
                      "sharpe_annual": sr * np.sqrt(52), "sharpe_95ci": [(sr - 1.96 * se) * np.sqrt(52), (sr + 1.96 * se) * np.sqrt(52)],
                      "sharpe_bootstrap_95ci": list(np.percentile(boot, [2.5, 97.5]) * np.sqrt(52)),
                      "deflated_sharpe_prob": stats.norm.cdf((sr - sr0) / se), "deflated_benchmark_sharpe_annual": sr0 * np.sqrt(52),
-                     "max_drawdown_usd": (cum - cum.cummax()).min(), "worst_week_usd": w.min(), "worst_trade_usd": X.pnl.min()}
+                     "max_drawdown_usd": (cum - cum.cummax()).min(), "worst_week_usd": w.min(), "worst_trade_usd": X.pnl.min(),
+                     "harvey_liu_haircut_sharpe": harvey_liu(sr, n, n_trials)}
+        X2 = X.assign(pnl=X.pnl - X.gross * 2 * EXTRA_COST_BP / 1e4)          # stress: extra cost per side on both legs
+        w2 = X2.groupby("date").pnl.sum().reindex(dates, fill_value=0.0)
+        out[fill]["sharpe_with_extra_5bp_per_side"] = w2.mean() / w2.std(ddof=1) * np.sqrt(52)
     (RES / "portfolio_sharpe.json").write_text(json.dumps(out, indent=1, default=float))
     for k, v in out.items():
         print(f"{k:8s} Sharpe {v['sharpe_annual']:5.2f}  95% CI [{v['sharpe_95ci'][0]:5.2f}, {v['sharpe_95ci'][1]:5.2f}]  "
-              f"deflated P {v['deflated_sharpe_prob']:.2f}  weekly ${v['weekly_pnl_mean_usd']:6.0f}  maxDD ${v['max_drawdown_usd']:6.0f}  {v['weekends_positive']}")
+              f"haircut {v['harvey_liu_haircut_sharpe']:4.2f}  +5bp/side {v['sharpe_with_extra_5bp_per_side']:5.2f}  deflated P {v['deflated_sharpe_prob']:.2f}  weekly ${v['weekly_pnl_mean_usd']:6.0f}  maxDD ${v['max_drawdown_usd']:6.0f}  {v['weekends_positive']}")
 
 
 if __name__ == "__main__":

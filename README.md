@@ -76,10 +76,17 @@ Full table: `weekend_fade/results/final_comparison.csv`.
 | **v2 + news filter** | **a bit worse** (25% of the hour's range) | **211** | **+0.43%** | **65%** | **4.4** | **5.9** | **23/29** |
 | v2 + news filter | worst price of the hour | 211 | −0.05% | 54% | −1.2 | −1.6 | 15/29 |
 
-**Portfolio Sharpe** (`portfolio_sharpe.py`): the Sharpe column above uses average returns per trade and ignores sizes. With real
-dollar positions and every live limit applied (153 trades, average position $9.3k, average gross $121k), weekly dollar P&L gives
-an annualised Sharpe of **5.9 (95% CI 3.5–8.3)** at fair fills, 3.0 (0.0–6.0) with slightly worse fills and −1.8 at the worst price.
-Deflated Sharpe probability for the 216 variants tried: 0.98 at fair fills, 0.43 with slightly worse fills. Max drawdown −$389 (fair).
+**Sharpe, calibrated** (`portfolio_sharpe.py`; dollar book with every live limit, weekly P&L, annualised). The per-trade
+"Sharpe" column above ignores sizes and is not a portfolio Sharpe.
+
+| | Fair fills | Realistic fills (25% of hourly range) |
+|---|---|---|
+| Backtest Sharpe (95% CI) | 5.9 (3.5–8.3) | **3.0 (0.0–6.0)** |
+| Harvey–Liu haircut for 216 rules tried | 3.1 | not significant |
+| Plus 5bp per side extra cost | 4.0 | 0.4 |
+
+Planning assumption for live trading: **Sharpe 1–2**, our judgement between those cases. Only the forward test on real
+order-book fills can settle it. 29 weekly observations; margin and funding not modelled.
 
 ![Cumulative return under three fill assumptions](weekend_fade/results/charts/equity_v2.png)
 

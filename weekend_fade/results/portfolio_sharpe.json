@@ -21,7 +21,9 @@
   "deflated_benchmark_sharpe_annual": 3.307563878929802,
   "max_drawdown_usd": -388.7736198991656,
   "worst_week_usd": -388.77361989916557,
-  "worst_trade_usd": -539.3561586437384
+  "worst_trade_usd": -539.3561586437384,
+  "harvey_liu_haircut_sharpe": 3.0644365212395877,
+  "sharpe_with_extra_5bp_per_side": 4.0063568807428815
  },
  "range25": {
   "trades": 153,
@@ -45,7 +47,9 @@
   "deflated_benchmark_sharpe_annual": 3.307563878929802,
   "max_drawdown_usd": -714.2305898517131,
   "worst_week_usd": -639.8908662666146,
-  "worst_trade_usd": -621.1927043282165
+  "worst_trade_usd": -621.1927043282165,
+  "harvey_liu_haircut_sharpe": 0.0,
+  "sharpe_with_extra_5bp_per_side": 0.37996520918880594
  },
  "range50": {
   "trades": 153,
@@ -69,6 +73,8 @@
   "deflated_benchmark_sharpe_annual": 3.307563878929802,
   "max_drawdown_usd": -2880.915974687802,
   "worst_week_usd": -1152.1844921817196,
-  "worst_trade_usd": -713.0292500126944
+  "worst_trade_usd": -713.0292500126944,
+  "harvey_liu_haircut_sharpe": 0.0,
+  "sharpe_with_extra_5bp_per_side": -4.244897924145811
  }
 }
