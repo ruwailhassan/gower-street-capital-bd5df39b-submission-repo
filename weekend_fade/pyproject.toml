@@ -1,0 +1,8 @@
+[project]
+name = "weekend-fade"
+version = "0.1.0"
+requires-python = ">=3.11,<3.14"
+dependencies = ["requests", "pandas>=2.2", "numpy", "pyarrow", "matplotlib", "tabulate", "pytest"]
+
+[tool.uv]
+package = false
