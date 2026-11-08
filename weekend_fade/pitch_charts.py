@@ -127,5 +127,24 @@ def main():
     print(json.dumps({k: v for k, v in nums.items()}, indent=1, default=str)[:3000])
 
 
+
+
+def walk_forward_chart():
+    """Bars of the walk-forward out-of-sample results (results/walk_forward_fair.json from rule_research --walk-forward)."""
+    o = json.loads((RES / "walk_forward_fair.json").read_text())["walk_forward"]
+    w = pd.Series(o["weekly_bp"]) / 100; x = np.arange(len(w))
+    fig, ax = plt.subplots(figsize=(11, 5.6))
+    ax.bar(x, w.values, color=[TEAL if v > 0 else AMBER for v in w.values], width=.75)
+    ax.axhline(0, color=MUTED, lw=1.5)
+    ax.text(len(w) / 2 - .5, w.max() * 1.42, f"Each weekend: rule chosen from earlier weekends only\n{o['positive'].replace('/', ' of ')} weekends positive",
+            ha="center", va="top", fontsize=18, color=TEAL, fontweight="bold")
+    ticks = [0, len(w) // 2, len(w) - 1]; ax.set_xticks(ticks, [pd.Timestamp(w.index[i]).strftime("%-d %b") for i in ticks])
+    ax.set_ylabel("Average return per trade that weekend, %"); ax.set_ylim(top=w.max() * 1.48); ax.grid(axis="y", color=GRID)
+    save(fig, "walk_forward.png")
+
+
 if __name__ == "__main__":
-    main()
+    if "--walk-forward-chart" in __import__("sys").argv:
+        OUT.mkdir(exist_ok=True); walk_forward_chart()
+    else:
+        main()

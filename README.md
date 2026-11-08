@@ -41,7 +41,7 @@ weekend_fade/.venv/bin/python -m weekend_fade.pitch_charts             # charts 
 weekend_fade/.venv/bin/python -m weekend_fade.portfolio_sharpe         # dollar-book Sharpe with CI, deflated Sharpe, drawdown
 weekend_fade/.venv/bin/python -m weekend_fade.backtest                 # rule v1 + baselines + placebo (add --fetch to download a fresh window)
 weekend_fade/.venv/bin/python -m weekend_fade.analysis                 # statistical tests behind the explainer
-weekend_fade/.venv/bin/python -m weekend_fade.rule_research            # 216 entry/exit/hedge/sizing variants, train/test
+weekend_fade/.venv/bin/python -m weekend_fade.rule_research            # 216 entry/exit/hedge/sizing variants (add --walk-forward for look-ahead-free selection)
 weekend_fade/.venv/bin/python -m weekend_fade.news_backtest            # news filter on all 254 past trades (~7 min)
 weekend_fade/.venv/bin/python -m weekend_fade.news_leakage_check       # can the model 'remember' the future? (blinded rerun)
 ```
@@ -91,8 +91,12 @@ order-book fills can settle it. 29 weekly observations; margin and funding not m
 ![Cumulative return under three fill assumptions](weekend_fade/results/charts/equity_v2.png)
 
 **Why we believe it is real** (rule v2 + news filter, fair fills, unless stated)
-- **Unseen data:** selecting from 216 variants using only the first 14 weekends picks the same entry, exit and hedge
-  as rule v2 (Sharpe 6.4 unseen); all 216 variants are profitable on the 15 later weekends. Rule v2 on those weekends: +0.77% per trade, t 5.3 (p 0.0001), 14 of 15 weekends positive (`results/charts/out_of_sample.png`).
+- **Out of sample, without look-ahead:** rule v2 was picked after results for both halves of the sample had been seen, so its
+  second-half result is not reported as out of sample. Instead, a walk-forward test re-selects the best of the 216 variants each
+  weekend using only earlier weekends, then trades it: **+0.65% per trade, t 4.7, 17 of 21 weekends positive** (realistic fills
+  +0.30%, t 2.7). Choosing once on the first 14 weekends and testing the last 15 once: +0.59%, t 2.9. All 216 variants are
+  profitable in the second half. `python -m weekend_fade.rule_research --walk-forward` (`results/walk_forward_*.json`).
+  The forward test is the clean out-of-sample record for v2 itself.
 - **Placebo:** the same measurement on weeknights, when perps follow real prices, shows nothing (slope t +0.8; strategy −0.08%, t −0.5).
   The weekend-minus-weeknight slope difference has t −3.8.
 - **Mechanism timing:** most of the gain arrives in the hour of the 20:05 ET switch to real prices.

@@ -126,5 +126,54 @@ def main():
         print(f"\nAverage test Sharpe by {c}:"); print(R.groupby(c, dropna=False).test_sharpe.mean().round(2).to_string())
 
 
+# ---------------------------------------------------------------- selection without look-ahead
+def variants():
+    exits = [("time", 21), ("time", 24), ("time", 28), ("target", .5, 28), ("target", .75, 28), ("stop", 100, 28), ("stop", 200, 28),
+             ("target_stop", .5, 200, 28), ("target", .5, 24)]
+    return [v for v in itertools.product([18, 19], exits, ["1:1", "beta"], ["equal", "scaled"], [None, 3.0, 2.0]) if v[1][-1] > v[0]]
+
+
+def walk_forward(min_train=8, fill="fair"):
+    """Each weekend k, pick the variant with the best Sharpe on weekends < k only, and record its result on weekend k.
+    Every recorded return is out of sample for the selection. Also: a single split (choose on the first half once)."""
+    P = panel(); dates = sorted(P.date.unique()); half = dates[len(dates) // 2]
+    W = {}
+    for v in variants():
+        T = simulate(P, *v, fill=fill)
+        if len(T) == 0: continue
+        W[v] = T.groupby("date").apply(lambda g: np.average(g.net, weights=g.w)).reindex(dates)
+    W = pd.DataFrame(W)
+    sh = lambda x: x.mean() / x.std(ddof=1) if x.count() > 2 and x.std(ddof=1) > 0 else -np.inf
+    picks, oos = [], []
+    for k in range(min_train, len(dates)):
+        past = W.iloc[:k]
+        best = max(W.columns, key=lambda c: sh(past[c].dropna()))
+        picks.append((dates[k], best)); oos.append(W.iloc[k][best])
+    oos = pd.Series(oos, index=[d for d, _ in picks]).fillna(0.0)
+    train = W[[d < half for d in dates]]; test = W[[d >= half for d in dates]]
+    split_pick = max(W.columns, key=lambda c: sh(train[c].dropna()))
+    t_stat = lambda x: x.mean() / (x.std(ddof=1) / np.sqrt(len(x)))
+    out = {"fill": fill, "min_train_weekends": min_train,
+           "walk_forward": {"weekends": len(oos), "mean_bp": float(oos.mean()), "t": float(t_stat(oos)),
+                            "sharpe": float(oos.mean() / oos.std(ddof=1) * np.sqrt(52)), "positive": f"{(oos > 0).sum()}/{len(oos)}",
+                            "weekly_bp": {d: float(x) for d, x in oos.items()},
+                            "picks": [{"date": d, "rule": str(v)} for d, v in picks]},
+           "single_split": {"train_end": half, "pick": str(split_pick), "test_mean_bp": float(test[split_pick].mean()),
+                            "test_t": float(t_stat(test[split_pick].dropna())),
+                            "test_sharpe": float(test[split_pick].mean() / test[split_pick].std(ddof=1) * np.sqrt(52)),
+                            "test_positive": f"{(test[split_pick] > 0).sum()}/{test[split_pick].count()}"},
+           "all_variants_test": {"n": int(test.shape[1]), "share_positive_mean": float((test.mean() > 0).mean()),
+                                 "min_sharpe": float((test.mean() / test.std(ddof=1)).min() * np.sqrt(52))}}
+    (RES / f"walk_forward_{fill}.json").write_text(json.dumps(out, indent=1, default=str))
+    return out
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+    if "--walk-forward" in sys.argv:
+        for f in ("fair", "range25"):
+            o = walk_forward(fill=f); w, s_ = o["walk_forward"], o["single_split"]
+            print(f"{f}: walk-forward {w['weekends']} weekends, mean {w['mean_bp']:.1f}bp, t {w['t']:.2f}, Sharpe {w['sharpe']:.2f}, {w['positive']} positive")
+            print(f"   single split: pick {s_['pick']} -> test {s_['test_mean_bp']:.1f}bp, t {s_['test_t']:.2f}, Sharpe {s_['test_sharpe']:.2f}, {s_['test_positive']}")
+    else:
+        main()
